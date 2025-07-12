@@ -1,0 +1,6 @@
+{
+  "watch": ["core", "app", "config", "app.ts"],
+  "ext": "ts,js,json,ejs",
+  "ignore": ["public", "node_modules"],
+  "exec": "ts-node --transpile-only app.ts"
+}

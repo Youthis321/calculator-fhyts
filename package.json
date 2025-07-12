@@ -1,0 +1,39 @@
+{
+  "name": "fhyts",
+  "version": "1.0.0",
+  "description": "Build typescript applications with a clean, modular, and easily extensible architecture.",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "ts-node app.ts",
+    "dev": "nodemon",
+    "build": "tsc && npm run copy:assets",
+    "copy:assets": "copyfiles -a config/** public/** dist/"
+  },
+  "keywords": [
+    "fhyts"
+  ],
+  "author": "FhyLabs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fitri-hy/fhyts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fitri-hy/fhyts/issues"
+  },
+  "homepage": "https://github.com/fitri-hy/fhyts#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "fhyts": "^1.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/node": "^24.0.12",
+    "@types/node-fetch": "^2.6.12",
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
