@@ -1,6 +1,6 @@
 {
   "name": "fhyts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build typescript applications with a clean, modular, and easily extensible architecture.",
   "main": "dist/app.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "homepage": "https://github.com/fitri-hy/fhyts#readme",
   "dependencies": {
     "ejs": "^3.1.10",
-    "fhyts": "^1.0.0",
+    "fhyts": "^1.0.1",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
