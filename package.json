@@ -1,39 +1,54 @@
 {
-  "name": "fhyts",
-  "version": "1.0.2",
-  "description": "Build typescript applications with a clean, modular, and easily extensible architecture.",
+  "name": "calculator-fhyts",
+  "version": "1.0.0",
+  "description": "Advanced Calculator App built with TypeScript and FhytS framework - Scientific calculator, unit converter, history, and memory functions.",
   "main": "dist/app.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
-    "start": "ts-node app.ts",
+    "start": "node dist/app.js",
     "dev": "nodemon",
     "build": "tsc && npm run copy:assets",
-    "copy:assets": "copyfiles -a config/** public/** dist/"
+    "copy:assets": "copyfiles -a config/** public/** dist/",
+    "vercel-build": "npm run build",
+    "postinstall": "npm run build"
   },
   "keywords": [
-    "fhyts"
+    "calculator",
+    "scientific-calculator",
+    "unit-converter",
+    "typescript",
+    "fhyts",
+    "vercel",
+    "serverless",
+    "math",
+    "web-app"
   ],
   "author": "FhyLabs",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fitri-hy/fhyts.git"
+    "url": "git+https://github.com/fitri-hy/calculator-fhyts.git"
   },
   "bugs": {
-    "url": "https://github.com/fitri-hy/fhyts/issues"
+    "url": "https://github.com/fitri-hy/calculator-fhyts/issues"
   },
-  "homepage": "https://github.com/fitri-hy/fhyts#readme",
+  "homepage": "https://calculator-fhyts.vercel.app",
   "dependencies": {
     "ejs": "^3.1.10",
     "fhyts": "^1.0.2",
-    "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.8.3",
+    "copyfiles": "^2.4.1",
     "@types/ejs": "^3.1.5",
     "@types/node": "^24.0.12",
     "@types/node-fetch": "^2.6.12",
-    "copyfiles": "^2.4.1",
+    "@vercel/node": "^3.0.0"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "ts-node": "^10.9.2"
   }
 }

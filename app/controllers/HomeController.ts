@@ -5,7 +5,7 @@ export class HomeController extends Controller {
 
   async index(req: Request, res: Response) {
     const page = this.views.render('home', { 
-	  title: 'FhyTS' 
+	  title: 'Advanced Calculator - FhyTS' 
 	});
     return res.status(200).html(page);
   }

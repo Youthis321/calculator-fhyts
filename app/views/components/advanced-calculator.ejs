@@ -1,0 +1,143 @@
+<div class="advanced-calculator">
+  <!-- Main Calculator Display -->
+  <div class="display-section">
+    <div class="memory-indicator" id="memoryIndicator" style="display: none;">M</div>
+    <input type="text" id="display" readonly placeholder="0" class="main-display">
+    <div class="expression-display" id="expressionDisplay"></div>
+  </div>
+
+  <!-- Mode Switcher -->
+  <div class="mode-switcher">
+    <button class="mode-btn active" data-mode="basic">Basic</button>
+    <button class="mode-btn" data-mode="scientific">Scientific</button>
+    <button class="mode-btn" data-mode="converter">Converter</button>
+    <button class="mode-btn" data-mode="history">History</button>
+  </div>
+
+  <!-- Basic Calculator -->
+  <div class="calculator-mode" id="basicMode">
+    <div class="button-grid basic-grid">
+      <!-- Memory Functions -->
+      <button class="btn btn-memory" onclick="memoryOperation('clear')">MC</button>
+      <button class="btn btn-memory" onclick="memoryOperation('recall')">MR</button>
+      <button class="btn btn-memory" onclick="memoryOperation('add')">M+</button>
+      <button class="btn btn-memory" onclick="memoryOperation('subtract')">M-</button>
+      
+      <!-- Clear Functions -->
+      <button class="btn btn-clear" onclick="clearDisplay()">C</button>
+      <button class="btn btn-clear" onclick="clearEntry()">CE</button>
+      <button class="btn btn-operator" onclick="deleteLast()">⌫</button>
+      <button class="btn btn-operator" onclick="appendToDisplay('/')">/</button>
+      
+      <!-- Numbers and Operations -->
+      <button class="btn btn-number" onclick="appendToDisplay('7')">7</button>
+      <button class="btn btn-number" onclick="appendToDisplay('8')">8</button>
+      <button class="btn btn-number" onclick="appendToDisplay('9')">9</button>
+      <button class="btn btn-operator" onclick="appendToDisplay('*')">×</button>
+      
+      <button class="btn btn-number" onclick="appendToDisplay('4')">4</button>
+      <button class="btn btn-number" onclick="appendToDisplay('5')">5</button>
+      <button class="btn btn-number" onclick="appendToDisplay('6')">6</button>
+      <button class="btn btn-operator" onclick="appendToDisplay('-')">-</button>
+      
+      <button class="btn btn-number" onclick="appendToDisplay('1')">1</button>
+      <button class="btn btn-number" onclick="appendToDisplay('2')">2</button>
+      <button class="btn btn-number" onclick="appendToDisplay('3')">3</button>
+      <button class="btn btn-operator" onclick="appendToDisplay('+')">+</button>
+      
+      <button class="btn btn-number btn-zero" onclick="appendToDisplay('0')">0</button>
+      <button class="btn btn-number" onclick="appendToDisplay('.')">.</button>
+      <button class="btn btn-equals" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <!-- Scientific Calculator -->
+  <div class="calculator-mode" id="scientificMode" style="display: none;">
+    <div class="angle-mode">
+      <label><input type="radio" name="angleMode" value="rad" checked> Rad</label>
+      <label><input type="radio" name="angleMode" value="deg"> Deg</label>
+    </div>
+    
+    <div class="button-grid scientific-grid">
+      <!-- Scientific Functions Row 1 -->
+      <button class="btn btn-function" onclick="scientificOperation('sin')">sin</button>
+      <button class="btn btn-function" onclick="scientificOperation('cos')">cos</button>
+      <button class="btn btn-function" onclick="scientificOperation('tan')">tan</button>
+      <button class="btn btn-function" onclick="scientificOperation('log')">log</button>
+      <button class="btn btn-function" onclick="scientificOperation('ln')">ln</button>
+      
+      <!-- Scientific Functions Row 2 -->
+      <button class="btn btn-function" onclick="scientificOperation('asin')">sin⁻¹</button>
+      <button class="btn btn-function" onclick="scientificOperation('acos')">cos⁻¹</button>
+      <button class="btn btn-function" onclick="scientificOperation('atan')">tan⁻¹</button>
+      <button class="btn btn-function" onclick="scientificOperation('log2')">log₂</button>
+      <button class="btn btn-function" onclick="scientificOperation('exp')">eˣ</button>
+      
+      <!-- Power and Root Functions -->
+      <button class="btn btn-function" onclick="scientificOperation('sqrt')">√</button>
+      <button class="btn btn-function" onclick="scientificOperation('cbrt')">∛</button>
+      <button class="btn btn-function" onclick="scientificOperation('square')">x²</button>
+      <button class="btn btn-function" onclick="scientificOperation('cube')">x³</button>
+      <button class="btn btn-function" onclick="scientificOperation('pow10')">10ˣ</button>
+      
+      <!-- Special Functions -->
+      <button class="btn btn-function" onclick="scientificOperation('factorial')">x!</button>
+      <button class="btn btn-function" onclick="scientificOperation('abs')">|x|</button>
+      <button class="btn btn-function" onclick="appendToDisplay('Math.PI')">π</button>
+      <button class="btn btn-function" onclick="appendToDisplay('Math.E')">e</button>
+      <button class="btn btn-function" onclick="scientificOperation('floor')">⌊x⌋</button>
+    </div>
+  </div>
+
+  <!-- Unit Converter -->
+  <div class="calculator-mode" id="converterMode" style="display: none;">
+    <div class="converter-section">
+      <div class="converter-category">
+        <label>Category:</label>
+        <select id="conversionCategory" onchange="updateUnits()">
+          <option value="length">Length</option>
+          <option value="weight">Weight</option>
+          <option value="temperature">Temperature</option>
+          <option value="area">Area</option>
+          <option value="volume">Volume</option>
+        </select>
+      </div>
+      
+      <div class="converter-inputs">
+        <div class="input-group">
+          <input type="number" id="fromValue" placeholder="Enter value" oninput="convertUnits()">
+          <select id="fromUnit"></select>
+        </div>
+        
+        <div class="conversion-arrow">→</div>
+        
+        <div class="input-group">
+          <input type="number" id="toValue" readonly>
+          <select id="toUnit" onchange="convertUnits()"></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="calculator-mode" id="historyMode" style="display: none;">
+    <div class="history-section">
+      <div class="history-header">
+        <h3>Calculation History</h3>
+        <button class="btn btn-clear" onclick="clearHistory()">Clear All</button>
+      </div>
+      <div id="historyList" class="history-list">
+        <!-- History items will be populated here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeErrorModal()">&times;</span>
+    <h3>Error</h3>
+    <p id="errorMessage"></p>
+  </div>
+</div>
