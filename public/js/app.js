@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setupModeSwitch();
   
   // Only update units if converter elements exist
-  const converterType = document.getElementById('converter-type');
+  const converterType = document.getElementById('conversionCategory');
   if (converterType) {
     updateUnits();
     // Add event listener for converter type change
@@ -87,7 +87,10 @@ function clearEntry() {
     display = '';
   }
   
-  document.getElementById('display').value = display || '0';
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    displayElement.value = display || '0';
+  }
   updateExpressionDisplay();
 }
 
@@ -95,7 +98,10 @@ function deleteLast() {
   if (display.length > 0) {
     display = display.slice(0, -1);
   }
-  document.getElementById('display').value = display || '0';
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    displayElement.value = display || '0';
+  }
   updateExpressionDisplay();
 }
 
@@ -120,7 +126,10 @@ async function calculate() {
     
     if (data.success) {
       display = data.result.toString();
-      document.getElementById('display').value = data.formatted;
+      const displayElement = document.getElementById('display');
+      if (displayElement) {
+        displayElement.value = data.formatted;
+      }
       updateExpressionDisplay();
       loadHistory(); // Refresh history
     } else {
@@ -153,7 +162,10 @@ async function scientificOperation(operation) {
     
     if (data.success) {
       display = data.result.toString();
-      document.getElementById('display').value = data.formatted;
+      const displayElement = document.getElementById('display');
+      if (displayElement) {
+        displayElement.value = data.formatted;
+      }
       updateExpressionDisplay();
       loadHistory();
     } else {
@@ -188,7 +200,10 @@ async function memoryOperation(operation) {
       
       if (operation === 'recall') {
         display = data.memory.toString();
-        document.getElementById('display').value = data.formatted;
+        const displayElement = document.getElementById('display');
+        if (displayElement) {
+          displayElement.value = data.formatted;
+        }
         updateExpressionDisplay();
       }
     } else {
@@ -248,9 +263,9 @@ function setupModeSwitch() {
 
 // Unit Converter Functions
 function updateUnits() {
-  const categoryElement = document.getElementById('converter-type');
-  const fromUnitElement = document.getElementById('from-unit');
-  const toUnitElement = document.getElementById('to-unit');
+  const categoryElement = document.getElementById('conversionCategory');
+  const fromUnitElement = document.getElementById('fromUnit');
+  const toUnitElement = document.getElementById('toUnit');
   
   // Check if elements exist
   if (!categoryElement || !fromUnitElement || !toUnitElement) {
@@ -284,11 +299,11 @@ function convertUnit() {
 }
 
 async function convertUnits() {
-  const inputElement = document.getElementById('converter-input');
-  const fromUnitElement = document.getElementById('from-unit');
-  const toUnitElement = document.getElementById('to-unit');
-  const categoryElement = document.getElementById('converter-type');
-  const resultElement = document.getElementById('converter-result');
+  const inputElement = document.getElementById('fromValue');
+  const fromUnitElement = document.getElementById('fromUnit');
+  const toUnitElement = document.getElementById('toUnit');
+  const categoryElement = document.getElementById('conversionCategory');
+  const resultElement = document.getElementById('toValue');
   
   // Check if all elements exist
   if (!inputElement || !fromUnitElement || !toUnitElement || !categoryElement || !resultElement) {
@@ -301,7 +316,7 @@ async function convertUnits() {
   const category = categoryElement.value;
   
   if (isNaN(fromValue) || !fromUnit || !toUnit) {
-    resultElement.textContent = '';
+    resultElement.value = '';
     return;
   }
   
@@ -322,12 +337,14 @@ async function convertUnits() {
     const data = await response.json();
     
     if (data.success) {
-      resultElement.textContent = `${fromValue} ${fromUnit} = ${data.formatted} ${toUnit}`;
+      resultElement.value = data.result;
     } else {
-      resultElement.textContent = `Error: ${data.error}`;
+      resultElement.value = '';
+      showError(data.error);
     }
   } catch (error) {
-    resultElement.textContent = 'Network error occurred';
+    resultElement.value = '';
+    showError('Network error occurred');
   }
 }
 
@@ -365,11 +382,17 @@ function displayHistory(history) {
 
 function useHistoryValue(value) {
   display = value.toString();
-  document.getElementById('display').value = value;
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    displayElement.value = value;
+  }
   updateExpressionDisplay();
   
   // Switch back to basic mode
-  document.querySelector('[data-mode="basic"]').click();
+  const basicModeButton = document.querySelector('[data-mode="basic"]');
+  if (basicModeButton) {
+    basicModeButton.click();
+  }
 }
 
 async function clearHistory() {
@@ -403,11 +426,17 @@ function showError(message) {
   }
   
   display = 'Error';
-  document.getElementById('display').value = 'Error';
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    displayElement.value = 'Error';
+  }
 }
 
 function closeErrorModal() {
-  document.getElementById('errorModal').style.display = 'none';
+  const modal = document.getElementById('errorModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
   clearDisplay();
 }
 
