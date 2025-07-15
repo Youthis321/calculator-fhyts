@@ -29,15 +29,30 @@ const unitCategories = {
 
 // Initialize calculator
 document.addEventListener('DOMContentLoaded', function() {
-  clearDisplay();
+  // Only initialize elements that exist on the current page
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    clearDisplay();
+  }
+  
   setupModeSwitch();
-  updateUnits();
+  
+  // Only update units if converter elements exist
+  const converterType = document.getElementById('converter-type');
+  if (converterType) {
+    updateUnits();
+    // Add event listener for converter type change
+    converterType.addEventListener('change', updateUnits);
+  }
+  
   loadHistory();
 });
 
 // Basic Calculator Functions
 function appendToDisplay(value) {
   const displayElement = document.getElementById('display');
+  
+  if (!displayElement) return; // Exit if display element doesn't exist
   
   if (display === '0' || display === 'Error') {
     display = value;
@@ -51,7 +66,10 @@ function appendToDisplay(value) {
 
 function clearDisplay() {
   display = '';
-  document.getElementById('display').value = '0';
+  const displayElement = document.getElementById('display');
+  if (displayElement) {
+    displayElement.value = '0';
+  }
   updateExpressionDisplay();
 }
 
@@ -193,6 +211,9 @@ function setupModeSwitch() {
   const modeButtons = document.querySelectorAll('.mode-btn');
   const modes = document.querySelectorAll('.calculator-mode');
   
+  // Only setup if mode buttons exist
+  if (modeButtons.length === 0) return;
+  
   modeButtons.forEach(button => {
     button.addEventListener('click', () => {
       const mode = button.dataset.mode;
@@ -203,13 +224,23 @@ function setupModeSwitch() {
       
       // Show/hide modes
       modes.forEach(modeDiv => {
-        modeDiv.style.display = modeDiv.id === mode + 'Mode' ? 'block' : 'none';
+        if (mode === 'basic') {
+          modeDiv.style.display = modeDiv.id === 'basic-calculator' ? 'block' : 'none';
+        } else if (mode === 'scientific') {
+          modeDiv.style.display = modeDiv.id === 'scientific-calculator' ? 'block' : 'none';
+        } else if (mode === 'converter') {
+          modeDiv.style.display = modeDiv.id === 'converter' ? 'block' : 'none';
+        } else if (mode === 'history') {
+          modeDiv.style.display = modeDiv.id === 'history' ? 'block' : 'none';
+        }
       });
       
       currentMode = mode;
       
       if (mode === 'history') {
         loadHistory();
+      } else if (mode === 'converter') {
+        updateUnits();
       }
     });
   });
@@ -217,35 +248,60 @@ function setupModeSwitch() {
 
 // Unit Converter Functions
 function updateUnits() {
-  const category = document.getElementById('conversionCategory').value;
-  const fromUnit = document.getElementById('fromUnit');
-  const toUnit = document.getElementById('toUnit');
+  const categoryElement = document.getElementById('converter-type');
+  const fromUnitElement = document.getElementById('from-unit');
+  const toUnitElement = document.getElementById('to-unit');
+  
+  // Check if elements exist
+  if (!categoryElement || !fromUnitElement || !toUnitElement) {
+    return; // Exit if converter elements don't exist on current page
+  }
+  
+  const category = categoryElement.value;
   
   // Clear existing options
-  fromUnit.innerHTML = '';
-  toUnit.innerHTML = '';
+  fromUnitElement.innerHTML = '';
+  toUnitElement.innerHTML = '';
   
   // Add new options
-  unitCategories[category].units.forEach((unit, index) => {
-    const fromOption = new Option(unitCategories[category].names[index], unit);
-    const toOption = new Option(unitCategories[category].names[index], unit);
-    fromUnit.add(fromOption);
-    toUnit.add(toOption);
-  });
-  
-  // Set default selections
-  if (fromUnit.options.length > 0) fromUnit.selectedIndex = 0;
-  if (toUnit.options.length > 1) toUnit.selectedIndex = 1;
+  if (unitCategories[category]) {
+    unitCategories[category].units.forEach((unit, index) => {
+      const fromOption = new Option(unitCategories[category].names[index], unit);
+      const toOption = new Option(unitCategories[category].names[index], unit);
+      fromUnitElement.add(fromOption);
+      toUnitElement.add(toOption);
+    });
+    
+    // Set default selections
+    if (fromUnitElement.options.length > 0) fromUnitElement.selectedIndex = 0;
+    if (toUnitElement.options.length > 1) toUnitElement.selectedIndex = 1;
+  }
+}
+
+// Unit conversion wrapper function
+function convertUnit() {
+  convertUnits();
 }
 
 async function convertUnits() {
-  const fromValue = parseFloat(document.getElementById('fromValue').value);
-  const fromUnit = document.getElementById('fromUnit').value;
-  const toUnit = document.getElementById('toUnit').value;
-  const category = document.getElementById('conversionCategory').value;
+  const inputElement = document.getElementById('converter-input');
+  const fromUnitElement = document.getElementById('from-unit');
+  const toUnitElement = document.getElementById('to-unit');
+  const categoryElement = document.getElementById('converter-type');
+  const resultElement = document.getElementById('converter-result');
+  
+  // Check if all elements exist
+  if (!inputElement || !fromUnitElement || !toUnitElement || !categoryElement || !resultElement) {
+    return;
+  }
+  
+  const fromValue = parseFloat(inputElement.value);
+  const fromUnit = fromUnitElement.value;
+  const toUnit = toUnitElement.value;
+  const category = categoryElement.value;
   
   if (isNaN(fromValue) || !fromUnit || !toUnit) {
-    document.getElementById('toValue').value = '';
+    resultElement.textContent = '';
     return;
   }
   
@@ -266,12 +322,12 @@ async function convertUnits() {
     const data = await response.json();
     
     if (data.success) {
-      document.getElementById('toValue').value = data.formatted;
+      resultElement.textContent = `${fromValue} ${fromUnit} = ${data.formatted} ${toUnit}`;
     } else {
-      showError(data.error);
+      resultElement.textContent = `Error: ${data.error}`;
     }
   } catch (error) {
-    showError('Network error occurred');
+    resultElement.textContent = 'Network error occurred';
   }
 }
 
