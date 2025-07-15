@@ -1,5 +1,7 @@
 import { FhyEngine, Config, Logger, Static } from 'fhyts';
 import { Route } from './app/routes';
+import * as path from 'path';
+import * as fs from 'fs';
 
 let app: FhyEngine | null = null;
 
@@ -9,6 +11,19 @@ async function initializeApp() {
   try {
     Logger.info('Loading config...');
     const config = Config.getInstance();
+    
+    // Check if config file exists (for local development)
+    const configPath = './config/App.Config.json';
+    const configExists = fs.existsSync(configPath);
+    
+    if (configExists) {
+      config.load(configPath);
+      Logger.info('Config loaded from file');
+    } else {
+      // For serverless deployment, use environment variables
+      Logger.info('Using environment config for serverless deployment');
+      // Config will use defaults when no file is loaded
+    }
 
     Logger.info('Registering routes...');
     Route();
@@ -17,8 +32,6 @@ async function initializeApp() {
     app = FhyEngine.getInstance();
     const staticMiddleware = new Static('./public');
     app.middlewareManager.use(staticMiddleware.handle.bind(staticMiddleware));
-
-    config.load('./config/App.Config.json');
     
     Logger.info('App initialized');
     return app;
