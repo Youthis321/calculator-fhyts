@@ -55,21 +55,26 @@ vercel --prod
 
 #### **File yang Sudah Disiapkan:**
 
-1. **`vercel.json`** - Konfigurasi Vercel
+1. **`vercel.json`** - Konfigurasi Vercel (Updated for latest standards)
 ```json
 {
   "version": 2,
-  "name": "calculator-fhyts",
   "builds": [
     {
       "src": "app.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30
+      }
     }
   ],
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "src": "/css/(.*)",
+      "dest": "/public/css/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
+      }
     },
     {
       "src": "/(.*)",

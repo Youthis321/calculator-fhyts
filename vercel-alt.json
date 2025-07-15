@@ -1,14 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "app.ts",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 30
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/css/(.*)",
@@ -42,5 +33,10 @@
       "src": "/(.*)",
       "dest": "/app.ts"
     }
-  ]
+  ],
+  "functions": {
+    "app.ts": {
+      "maxDuration": 30
+    }
+  }
 }
